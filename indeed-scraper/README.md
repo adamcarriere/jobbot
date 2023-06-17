@@ -1,22 +1,25 @@
 # Indeed Job Search Scraper
 
-A utility that uses [Puppeteer](https://pptr.dev/) to scrape Indeed.ca for jobs.
+A utility that uses [Puppeteer](https://pptr.dev/) to scrape Indeed.ca for job listings.
 
-The library exports a single async function `scrapeIndeedWithQueries` which takes an array of objects representing your searches. Each search will be executed in a puppeteer browser instance concurrently and will return an object with the following shape:
+The library exports a single async function `scrapeIndeedWithQueries` which takes an array of search objects representing your searches. Each search will return a keyed object of search results:
 
 ```js
 {   
-    // the id of the job posting on Indeed
-    [id: String]: {
-        title: String // the job title in the posting
-        url: String // link to the job posting
-        company: {
-            name: String // name of the company who posted it
-            link: String // link to their Indeed profile
-        }
-        description: String // contents of the job posting
-        salary: String | undefined // salary if detectable
-    }
+    [id: String]: { // the Indeed jk or sk id
+    title: String,
+    url: String,
+    company: { 
+        name: Strings,
+        location: String 
+    },
+    salary: { // if there was a salary on the result card; if not returns null
+        range: [Object], 
+        rate: 'annually' 
+    },
+    metadata: Array<String>, // other metadata strings
+    snippet: String // the job snippet on the initial result
+  }
 }
 ```
 
@@ -36,7 +39,6 @@ Example:
 
 ```js
 import scrapeIndeedWithQueries from 'indeed-scraper'
-// import scrapeIndeedWithQueries from './index.js'
 
 const queries = [
     { what: 'nodejs developer', where: 'remote' },

@@ -10,7 +10,7 @@ export default async function evaluateListingElement (element) {
 
     const parseSalary = salaryElement => {
       if (salaryElement == null) {
-        return {}
+        return null
       }
 
       const text = salaryElement.innerText

@@ -16,7 +16,6 @@ export async function getJobListingsForParams ({ what, where, when }) {
     const params = [q, l, fromage]
 
     const indeedUrl = `https://ca.indeed.com/jobs?${params.join('&')}`
-    console.log(indeedUrl)
 
     await page.goto(indeedUrl)
     await page.waitForNetworkIdle()
@@ -33,11 +32,7 @@ export async function getJobListingsForParams ({ what, where, when }) {
       for (let i = 0; i < jobListings.length; i++) {
         console.log(`Scraping job ${i + 1} of ${jobListings.length}`)
         const listingElement = jobListings[i]
-        await page.screenshot({
-          path: `./job${i}.jpg`
-        })
         jobs.push(await evaluateListingElement(listingElement))
-        // console.log(await evaluateListingElement(listingElement))
       }
 
       await page.screenshot({ path: './last.png' })
@@ -56,16 +51,6 @@ export async function getJobListingsForParams ({ what, where, when }) {
     }
 
     return await scrape()
-
-    // // await page.screenshot({ path: './last.png' })
-    // // const nextBtn = await page.$('a[data-testid="pagination-page-next"]')
-    // // await nextBtn.click()
-    // // await page.waitForNavigation()
-    // // await page.screenshot({ path: './next.jpg' })
-    // // console.log(nextBtn)
-
-    // browser.close()
-    // return jobs
   } catch (e) {
     console.error(e)
     await page.screenshot({ path: './error.jpg' })
