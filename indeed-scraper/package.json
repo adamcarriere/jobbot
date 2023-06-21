@@ -1,5 +1,5 @@
 {
-  "name": "indeed-scraper",
+  "name": "@adamcarriere/indeed-scraper",
   "type": "module",
   "version": "0.1.0",
   "description": "",
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "puppeteer": "^20.5.0"
   },
   "devDependencies": {

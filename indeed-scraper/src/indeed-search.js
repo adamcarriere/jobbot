@@ -16,11 +16,10 @@ export async function getJobListingsForParams ({ what, where, when }) {
     const params = [q, l, fromage]
 
     const indeedUrl = `https://ca.indeed.com/jobs?${params.join('&')}`
-
+    console.log(`Navigating to ${indeedUrl}`)
     await page.goto(indeedUrl)
-    await page.waitForNetworkIdle()
-
     const scrape = async (inJobs = []) => {
+      await page.waitForSelector('.jobsearch-ResultsList')
       console.log(inJobs.length)
       console.log('Scraping page...')
       await page.mouse.click(1920 / 2, 10) // sometimes, there's a popup
@@ -44,9 +43,9 @@ export async function getJobListingsForParams ({ what, where, when }) {
         return outJobs
       }
 
-      console.log('click next')
-      await nextBtn.click()
-      await page.waitForNavigation()
+      const nextPath = await nextBtn.evaluate(el => el.href)
+      console.log(`Next page: ${nextPath}`)
+      await page.goto(nextPath)
       return await scrape(outJobs)
     }
 
