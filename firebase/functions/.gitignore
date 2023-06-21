@@ -2,6 +2,8 @@
 lib/**/*.js
 lib/**/*.js.map
 
+.npmrc
+
 # TypeScript v1 declaration files
 typings/
 
