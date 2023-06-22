@@ -4,10 +4,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./index.js"
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -15,10 +12,15 @@
     "puppeteer": "^20.5.0"
   },
   "devDependencies": {
-    "eslint": "^8.42.0",
+    "@tsconfig/node18": "^2.0.1",
+    "@tsconfig/strictest": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
     "eslint-config-standard": "^17.1.0",
+    "eslint-config-standard-with-typescript": "^35.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^16.0.0",
+    "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "typescript": "^5.1.3"
   }

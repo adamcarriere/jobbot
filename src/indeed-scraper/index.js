@@ -1,4 +1,4 @@
-import { getJobListingsForParams } from './src/indeed-search.js'
+import { getJobListingsForParams } from './puppeteer/indeed-search.js'
 
 export default async function scrapeIndeedWithQueries (queries) {
   console.log(`Searching for ${queries.map(q => `"${q.what} | ${q.where}"`)}`)

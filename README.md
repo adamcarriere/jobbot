@@ -1,20 +1,59 @@
-# job-seeking-robot
+# Indeed Job Search Scraper
 
-# TODOs
+A utility that uses [Puppeteer](https://pptr.dev/) to scrape Indeed.ca for job listings.
 
-- [x] Using the code from `indeed-scraper` as a lib, create a new firebase project with a realtime database
-- [x] Create a firebase project with a realtime database that, using a Cloud function or the REST api, will store the jobs I have searched.
-- [ ] Run the indeed-scraper from a cloud function
-- [ ] parse indeed job pages
-- [ ] Process job listings with ChatGPT API
-- [ ] Send eligible job listing to Trello (or other?) board(s)
-- [ ] Host some stuff in private npm registries in GitHub
+The library exports a single async function `scrapeIndeedWithQueries` which takes an array of search objects representing your searches. Each search will return a keyed object of search results:
 
-# Future Integrations
+```js
+{   
+    [id: String]: { // the Indeed jk or sk id
+    title: String,
+    url: String,
+    company: { 
+        name: Strings,
+        location: String 
+    },
+    salary: { // if there was a salary on the result card; if not returns null
+        range: [Object], 
+        rate: 'annually' 
+    },
+    metadata: Array<String>, // other metadata strings
+    snippet: String // the job snippet on the initial result
+  }
+}
+```
 
-- [ ] LinkedIn
-- [ ] Email/Text/Slack notifications w/ summaries
+## Usage
 
-# Nice to haves
+`scrapeIndeedWithQueries` accepts an array of objects with the following shape:
 
-- [ ] Automated applications
+```js
+{
+    what: String // the job title you are searching for
+    where: String // the location the job is in
+    when: undefined | 1 | 3 | 7 | 14 // the "date posted" filter
+}
+```
+
+Example:
+
+```js
+import scrapeIndeedWithQueries from 'indeed-scraper'
+
+const queries = [
+    { what: 'nodejs developer', where: 'remote' },
+    { what: 'typescript developer', where: 'Montreal', when: 3 }
+]
+
+const jobs = await scrapeIndeedWithQueries(queries)
+```
+
+### Salary
+
+To include a salary range you can append it to the `what` property in your query objects.
+
+Example, if you want to search for salaries $100k+:
+```js
+const what = 'nodejs developer $100k+'
+const query = {what, where, when}
+```
