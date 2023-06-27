@@ -64,11 +64,9 @@ export default async function evaluateListingElement (element) {
   })
 
   const snippet = await element.$eval('.job-snippet', el => el.innerText)
-  const { id, ...data } = resultContent
+
   return {
-    [id]: {
-      ...data,
-      snippet
-    }
+    ...resultContent,
+    snippet
   }
 }

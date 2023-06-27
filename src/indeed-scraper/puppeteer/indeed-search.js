@@ -34,7 +34,6 @@ export async function getJobListingsForParams ({ what, where, when }) {
         jobs.push(await evaluateListingElement(listingElement))
       }
 
-      await page.screenshot({ path: './last.png' })
       const nextBtn = await page.$('a[data-testid="pagination-page-next"]')
 
       const outJobs = [...inJobs, ...jobs]
@@ -52,7 +51,6 @@ export async function getJobListingsForParams ({ what, where, when }) {
     return await scrape()
   } catch (e) {
     console.error(e)
-    await page.screenshot({ path: './error.jpg' })
     process.exit(0)
   }
 }

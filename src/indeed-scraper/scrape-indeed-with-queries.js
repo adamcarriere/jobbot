@@ -9,6 +9,5 @@ export default async function scrapeIndeedWithQueries (queries) {
   const jobs = results.flat()
 
   console.log(`Scraped ${jobs.length}`)
-  const result = Object.assign({}, ...jobs)
-  return result
+  return jobs
 }
