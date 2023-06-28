@@ -1,0 +1,16 @@
+DATAPATH: './data.json' # path to the file that will be created to store the postings you've searched
+OPENAI_KEY: [YOUR_OPEN_AI_KEY]
+TRELLOAPI_TOKEN: [YOUR_TRELLO_API_TOKEN]
+TRELLOAPI_KEY: [YOUR_TRELLO_API_KEY]
+
+# the queries that will be searched on Indeed
+queries:
+  - what: 'Frontend Developer: TypeScript, JavaScript, HTML, CSS, Vue.js, React.js'
+    where: remote
+    when: 3
+  - what: 'Full Stack Developer: TypeScript, JavaScript, HTML, CSS, Node.js, Python'
+    where: remote
+    when: 3
+  - what: 'Senior Software Developer: TypeScript, JavaScript, HTML, CSS, Node.js, Python'
+    where: remote
+    when: 3

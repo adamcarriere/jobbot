@@ -1,6 +1,8 @@
+// Copyright: (c) 2023, Adam Carriere <carriere.ae@gmail.com>
+// GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 import axios from 'axios'
 import config from '../config.js'
-import trello from '../trello/trello-config.js'
 
 const baseUrl = 'https://api.trello.com/1'
 
@@ -97,9 +99,9 @@ export const createLabelForBoard = async (name, color, idBoard) => {
   }
 }
 
-export const getMemberId = async () => {
+export const getMemberId = async (username) => {
   try {
-    const { data } = await axios.get(`${baseUrl}/members/${trello.username}`)
+    const { data } = await axios.get(`${baseUrl}/members/${username}`)
     return data.id
   } catch ({ message, config }) {
     throw new Error(JSON.stringify({ message, config }))

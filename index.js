@@ -1,3 +1,6 @@
+// Copyright: (c) 2023, Adam Carriere <carriere.ae@gmail.com>
+// GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 import scrapeIndeedWithQuery from './src/indeed-scraper/scrape-indeed-with-queries.js'
 import filterUnprocessedResults from './src/data/filter-unprocessed-resutls.js'
 import scrapeDescriptionFromListing from './src/indeed-scraper/scrape-description-from-listing.js'

@@ -1,0 +1,28 @@
+memberId: [YOUR_TRELLO_MEMBER_ID]
+board:
+  id: [YOUR_BOARD_ID]
+  url: [YOUR_BOARD_URL]
+lists: # lists on the board (the first one is the important one)
+  - [LIST_ID]
+labels:
+  - id: [ID_FOR_LABEL]
+    color: purple
+    name: From Jobbot
+  - id: [ID_FOR_LABEL]
+    color: red
+    name: Not suitable
+  - id: [ID_FOR_LABEL]
+    color: orange
+    name: Less suitable
+  - id: [ID_FOR_LABEL]
+    color: yellow
+    name: Suitable
+  - id: [ID_FOR_LABEL]
+    color: green
+    name: More suitable
+  - id: [ID_FOR_LABEL]
+    color: blue
+    name: Excellent
+  - id:  [ID_FOR_LABEL]    
+    name: '$$$'                       
+    color: 'lime'                      

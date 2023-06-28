@@ -1,20 +1,23 @@
+// Copyright: (c) 2023, Adam Carriere <carriere.ae@gmail.com>
+// GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 // import axios from 'axios'
-import { createLabelForBoard, createListOnBoard, createTrelloBoard } from '../src/trello/trello-api.js'
+import { createLabelForBoard, createListOnBoard, createTrelloBoard, getMemberId } from '../src/trello/trello-api.js'
 import yaml from 'yaml'
 import fs from 'node:fs'
 import config from '../src/config.js'
 
 const { TRELLOAPI_KEY, TRELLOAPI_TOKEN } = config
 
-// const key = process.env.TRELLOAPI_KEY
-// const token = process.env.TRELLOAPI_TOKEN
-
-const boardName = process.argv.splice(2)[0]
+const args = process.argv.splice(2)
+const boardName = args[0]
 const outFile = 'trello.config.yaml'
 
 console.log(`========== CREATING BOARD NAMED "${boardName}" ==========`)
 console.log(`Trello api key: ${TRELLOAPI_KEY}`)
 console.log(`Trello api token: ${TRELLOAPI_TOKEN}`)
+
+const memberId = await getMemberId(args[1])
 
 const { data: board } = await createTrelloBoard(boardName)
 const newBoard = board.id
@@ -40,11 +43,12 @@ const lists = listResponses.map(l => l.data.id)
 
 const labelNames = {
   purple: 'From Jobbot',
-  red: 'Not suitable', // < 20
-  orange: 'Less suitable', // < 40
-  yellow: 'Suitable', // < 60
-  green: 'More suiteable', // < 80
-  blue: 'Excellent' // 100
+  red: 'Not suitable',
+  orange: 'Less suitable',
+  yellow: 'Suitable',
+  green: 'More suiteable',
+  blue: 'Excellent',
+  lime: '$$$'
 }
 
 const labelObjects = Object.keys(labelNames).map(key => {
@@ -63,7 +67,8 @@ const { id, url } = board
 const data = {
   board: { id, url },
   lists,
-  labels
+  labels,
+  memberId
 }
 
 const yml = yaml.stringify({ ...data })
