@@ -22,7 +22,7 @@ export const createTrelloBoard = async (name) => {
     })
     return result
   } catch ({ message, config }) {
-    return { message, config }
+    throw new Error(JSON.stringify({ message, config }))
   }
 }
 
@@ -41,18 +41,57 @@ export const createListOnBoard = async (name, idBoard, pos) => {
 }
 
 // https://api.trello.com/1/cards?idList=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken'
-export const createCardOnList = async (idList, name, desc) => {
+export const createCardOnList = async (idList, name, desc, idLabels, urlSource) => {
   try {
     const result = await axios.post(`${baseUrl}/cards`, null, {
       params: {
         idList,
         name,
         desc,
+        idLabels,
+        urlSource,
         ...auth
       }
     })
     return result
   } catch ({ message, config }) {
-    return { message, config }
+    throw new Error(JSON.stringify({ message, config }))
+  }
+}
+
+const colors = ['yellow',
+  'purple',
+  'blue',
+  'red',
+  'green',
+  'orange',
+  'black',
+  'sky',
+  'pink',
+  'lime']
+
+/**
+ * 'https://api.trello.com/1/labels?name={name}&color={color}&idBoard={idBoard}&key=APIKey&token=APIToken'
+ * @param {*} name
+ * @param {'yellow' |'purple' | 'blue'| 'red' | 'green' | 'orange' | 'black' | 'sky' | 'pink' | 'lime'} color
+ * @param {*} idBoard
+ */
+export const createLabelForBoard = async (name, color, idBoard) => {
+  if (!colors.includes(color)) {
+    console.error(`${color} is not a valid color in: ${colors.join('|')}`)
+  }
+
+  try {
+    const res = await axios.post(`${baseUrl}/labels`, null, {
+      params: {
+        name,
+        color,
+        idBoard,
+        ...auth
+      }
+    })
+    return res
+  } catch ({ message, config }) {
+    throw new Error(JSON.stringify({ message, config }))
   }
 }

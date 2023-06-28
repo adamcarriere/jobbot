@@ -1,12 +1,8 @@
 import { getJobListingsForParams } from './puppeteer/indeed-search.js'
 
-export default async function scrapeIndeedWithQueries (queries) {
-  console.log(`Searching for ${queries.map(q => `"${q.what} | ${q.where}"`)}`)
-
-  const searches = queries.map(getJobListingsForParams)
-  const results = await Promise.all(searches)
-
-  const jobs = results.flat()
+export default async function scrapeIndeedWithQuery (query) {
+  console.log('Loading Indeed...')
+  const jobs = await getJobListingsForParams(query)
 
   console.log(`Scraped ${jobs.length}`)
   return jobs

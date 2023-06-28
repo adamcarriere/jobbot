@@ -36,7 +36,7 @@ export const getStoredListings = async (keys = [], filter = {}, reducer = store.
  * @returns {Promise<string[]>}
  */
 export const getListingIds = async () => {
-  return getStoredListings(['id'], ({ id }) => id)
+  return getStoredListings(['id'], {}, ({ id }) => id)
 }
 
 /**
@@ -50,10 +50,10 @@ export const addListing = listing => {
   store.set(item)
 }
 
-export const updateListing = listing => {
-  const storedListing = store.get(data => {
+export const updateListing = async listing => {
+  const storedListing = (await store.get(data => {
     return Object.keys(data).filter(key => data[key].id === listing.id)
-  })[0]
+  }))[0]
 
   const item = { [storedListing]: listing }
   store.set(item)

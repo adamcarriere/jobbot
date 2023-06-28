@@ -1,8 +1,8 @@
-import scrapeIndeedWithQueries from './src/indeed-scraper/scrape-indeed-with-queries.js'
+import scrapeIndeedWithQuery from './src/indeed-scraper/scrape-indeed-with-queries.js'
 import filterUnprocessedResults from './src/data/filter-unprocessed-resutls.js'
 import scrapeDescriptionFromListing from './src/indeed-scraper/scrape-description-from-listing.js'
 import { screenListings } from './src/process-result.js'
-import * as dataStore from './src/data/data-store.js'
+import config from './src/config.js'
 
 process.setMaxListeners(100)
 
@@ -15,25 +15,24 @@ const applyDescriptionToListing = async listing => {
   })
 }
 
+const { queries } = config
+
 const main = async () => {
   console.log('Starting job search...')
 
-  const indeedResults = await scrapeIndeedWithQueries([{
-    what: 'nodejs developer',
-    where: 'Montréal, QC',
-    when: 14
-  }])
+  for (const query of queries) {
+    console.log(`========== STARTING NEW QUERY for "${query.what} | ${query.where} ==========`)
+    const indeedResults = await scrapeIndeedWithQuery(query)
 
-  // filter out results that already exist in the datastore
-  const resultsToProcess = await filterUnprocessedResults(indeedResults)
+    // filter out results that already exist in the datastore
+    const resultsToProcess = await filterUnprocessedResults(indeedResults)
 
-  // get the job description from the full listing
-  const listings = await Promise.all(resultsToProcess.map(applyDescriptionToListing))
+    // get the job description from the full listing
+    const listings = await Promise.all(resultsToProcess.map(applyDescriptionToListing))
 
-  // screen the listings with a prescreening and ChatGPT
-  const screenedListings = await screenListings(listings)
-
-  return screenedListings
+    // screen the listings with a prescreening and ChatGPT
+    await screenListings(listings)
+  }
 }
 
 await main()

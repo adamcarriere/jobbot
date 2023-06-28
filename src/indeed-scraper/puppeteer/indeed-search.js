@@ -19,19 +19,23 @@ export async function getJobListingsForParams ({ what, where, when }) {
     console.log(`Navigating to ${indeedUrl}`)
     await page.goto(indeedUrl)
     const scrape = async (inJobs = []) => {
-      await page.waitForSelector('.jobsearch-ResultsList')
-      console.log(inJobs.length)
-      console.log('Scraping page...')
-      await page.mouse.click(1920 / 2, 10) // sometimes, there's a popup
-
-      const jobListings = await page.$$('.result')
-
       const jobs = []
 
-      for (let i = 0; i < jobListings.length; i++) {
-        console.log(`Scraping job ${i + 1} of ${jobListings.length}`)
-        const listingElement = jobListings[i]
-        jobs.push(await evaluateListingElement(listingElement))
+      try {
+        await page.waitForSelector('.jobsearch-ResultsList', { timeout: 5000 })
+        console.log(inJobs.length)
+        console.log('Scraping page...')
+        await page.mouse.click(1920 / 2, 10) // sometimes, there's a popup
+
+        const jobListings = await page.$$('.result')
+
+        for (let i = 0; i < jobListings.length; i++) {
+          console.log(`Scraping job ${i + 1} of ${jobListings.length}`)
+          const listingElement = jobListings[i]
+          jobs.push(await evaluateListingElement(listingElement))
+        }
+      } catch (err) {
+        console.log(`There were no jobs at ${indeedUrl}`)
       }
 
       const nextBtn = await page.$('a[data-testid="pagination-page-next"]')

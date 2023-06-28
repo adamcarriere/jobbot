@@ -3,6 +3,7 @@ import openai from './openai/openai-instance.js'
 import optimizeListing from './token-optimization/optimize-listing.js'
 import util from 'node:util'
 import * as store from './data/data-helpers.js'
+import { createTrelloCard } from './create-cards-from-data-store.js'
 
 function screenListing (listing) {
   const optimized = optimizeListing(listing)
@@ -31,11 +32,12 @@ export async function screenListings (results = []) {
       setTimeout(() => {
         requestOpenAi(listing)
           .then(data => {
-            console.log(`Response for ${id}`)
-            console.log(util.inspect(data, { colors: true, depth: null }))
+            console.log(`... got response for ${id}`)
             const entry = { ...listing, status: 'ANALYZED', openAiResponse: data }
             store.addListing(entry)
-            resolve(entry)
+            createTrelloCard(entry).then(val => {
+              resolve(entry)
+            })
           }).catch(openAiError => resolve({ ...listing, status: 'OPENAI_ERROR', openAiError }))
       }, timeout)
     })

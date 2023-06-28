@@ -8,7 +8,6 @@ import { getListingIds } from './data-helpers.js'
 export default async function filterUnprocessedResults (results) {
   console.log('Filtering unprocessed results...')
   const listingIds = await getListingIds()
-  console.log(listingIds)
 
   const filtered = results.filter(res => {
     if (listingIds.includes(res.id)) {
