@@ -32,7 +32,7 @@ export async function getJobListingsForParams ({ what, where, when }) {
         for (let i = 0; i < jobListings.length; i++) {
           console.log(`Scraping job ${i + 1} of ${jobListings.length}`)
           const listingElement = jobListings[i]
-          jobs.push(await evaluateListingElement(listingElement))
+          jobs.push({ ...(await evaluateListingElement(listingElement)), query: { what, where, when } })
         }
       } catch (err) {
         console.log(`There were no jobs at ${indeedUrl}`)

@@ -1,12 +1,12 @@
-import * as store from './data/data-helpers.js'
-import { createCardOnList } from './trello/trello-api.js'
-import trelloConfig from './trello/trello-config.js'
+import * as store from '../data/data-helpers.js'
+import { createCardOnList, getMemberId } from './trello-api.js'
+import trelloConfig from './trello-config.js'
 
 const inboxList = trelloConfig.lists[0]
 
 const labels = trelloConfig.labels
 
-const parseListing = item => {
+export const parseListing = item => {
   const { id, title, company, salary, openAiResponse, url, status } = item
   const { choices } = openAiResponse
 
@@ -18,12 +18,14 @@ const parseListing = item => {
   return { id, title, company, salary, summary, score, url, status }
 }
 
-export const createTrelloCard = async listing => {
+export const createTrelloCardForListing = async listing => {
   const { title, company, salary, summary, score, url } = parseListing(listing)
 
-  const name = `${score} - ${company.name} - ${title}`
-  const salaryString = salary == null ? 'No salary listed' : `${salary.range.min} - ${salary.range.max ?? 'No max listed'}`
+  const scoreStr = score.replace(/[A-Za-z:]*/, '').replace(/\/(.*)/, '').trim()
 
+  const name = `${scoreStr} - ${company.name} - ${title}`
+  const salaryString = salary == null ? 'No salary listed' : `${salary.range.min} - ${salary.range.max ?? '(No max listed)'}  ${salary.rate}`
+  const salaryVal = salary == null ? 0 : (salary.range == null ? 0 : salary.range.min ?? (salary.range.max ?? 0))
   const desc = `# Salary
   ${salaryString}
 
@@ -36,31 +38,36 @@ export const createTrelloCard = async listing => {
   # Location
   ${company.location}
   `
+  const scoreVal = parseInt(scoreStr)
   const idLabels = labels.filter(label => {
     switch (label.color) {
       case 'red':
-        return score < 20
+        return scoreVal < 40
       case 'orange':
-        return score >= 20 && score < 40
+        return scoreVal >= 40 && scoreVal < 60
       case 'yellow':
-        return score >= 40 && score < 60
+        return scoreVal >= 60 && scoreVal < 80
       case 'green':
-        return score >= 60 && score < 80
+        return scoreVal >= 80 && scoreVal < 90
       case 'blue':
-        return score >= 80
+        return scoreVal >= 90
       case 'purple':
         return true
+      case 'lime':
+        return salaryVal >= 100000
       default:
         return false
     }
   }).map(l => l.id)
 
-  const result = await createCardOnList(inboxList, name, desc, idLabels, url)
+  const { member } = trelloConfig
+  const result = await createCardOnList({ idList: inboxList, name, desc, idLabels, idMembers: [member] })
   store.updateListing({ ...listing, status: 'POSTED' }).then(() => {})
+
   return result
 }
 
-export default async function createCardsFromDataStore () {
+export async function createCardsFromDataStore () {
   const listings = await store.getStoredListings([], { status: 'ANALYZED' }, item => {
     const { id, title, company, salary, openAiResponse, url, status } = item
     const { choices } = openAiResponse
@@ -73,5 +80,5 @@ export default async function createCardsFromDataStore () {
     return { id, title, company, salary, summary, score, url, status }
   })
 
-  return await Promise.all(listings.map(createTrelloCard))
+  return await Promise.all(listings.map(createTrelloCardForListing))
 }

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '../config.js'
+import trello from '../trello/trello-config.js'
 
 const baseUrl = 'https://api.trello.com/1'
 
@@ -41,7 +42,7 @@ export const createListOnBoard = async (name, idBoard, pos) => {
 }
 
 // https://api.trello.com/1/cards?idList=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken'
-export const createCardOnList = async (idList, name, desc, idLabels, urlSource) => {
+export const createCardOnList = async ({ idList, name, desc, idMembers, idLabels, urlSource }) => {
   try {
     const result = await axios.post(`${baseUrl}/cards`, null, {
       params: {
@@ -91,6 +92,15 @@ export const createLabelForBoard = async (name, color, idBoard) => {
       }
     })
     return res
+  } catch ({ message, config }) {
+    throw new Error(JSON.stringify({ message, config }))
+  }
+}
+
+export const getMemberId = async () => {
+  try {
+    const { data } = await axios.get(`${baseUrl}/members/${trello.username}`)
+    return data.id
   } catch ({ message, config }) {
     throw new Error(JSON.stringify({ message, config }))
   }

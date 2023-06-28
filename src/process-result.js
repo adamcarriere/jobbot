@@ -3,7 +3,7 @@ import openai from './openai/openai-instance.js'
 import optimizeListing from './token-optimization/optimize-listing.js'
 import util from 'node:util'
 import * as store from './data/data-helpers.js'
-import { createTrelloCard } from './create-cards-from-data-store.js'
+import { createTrelloCardForListing } from './trello/create-cards.js'
 
 function screenListing (listing) {
   const optimized = optimizeListing(listing)
@@ -23,7 +23,7 @@ async function requestOpenAi (listing) {
 }
 
 export async function screenListings (results = []) {
-  const prescreened = results.map(screenListing).filter(l => l.status !== 'FRENCH_ONLY')
+  const prescreened = results.map(screenListing).filter(l => l.status !== 'NO_ENGLISH')
   const screenings = await Promise.all(prescreened.map((listing, index) => {
     return new Promise((resolve, reject) => {
       const { id } = listing
@@ -35,7 +35,7 @@ export async function screenListings (results = []) {
             console.log(`... got response for ${id}`)
             const entry = { ...listing, status: 'ANALYZED', openAiResponse: data }
             store.addListing(entry)
-            createTrelloCard(entry).then(val => {
+            createTrelloCardForListing(entry).then(val => {
               resolve(entry)
             })
           }).catch(openAiError => resolve({ ...listing, status: 'OPENAI_ERROR', openAiError }))
