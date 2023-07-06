@@ -3,6 +3,6 @@
 
 import natural from 'natural'
 
-export function applySentenceCompression (str) {
+export function tokenizeAndStemString (str) {
   return natural.PorterStemmer.tokenizeAndStem(str).join(' ')
 }
