@@ -4,7 +4,7 @@
 import englishKeywords from './english-keywords.js'
 import frenchHalts from './french-halts.js'
 import filterByLanguageComparison from './filter-by-language-comparison.js'
-import { applySentenceCompression } from './sentence-compression.js'
+import { tokenizeAndStemString } from './sentence-compression.js'
 import { encode } from 'gpt-3-encoder'
 export default function optimizeListing (listing) {
   // remove any french text from the description
@@ -37,7 +37,7 @@ export default function optimizeListing (listing) {
   const englishTokenCount = encode(english).length
   console.log(`... after English: ${englishTokenCount}`)
 
-  const compressed = applySentenceCompression(english)
+  const compressed = tokenizeAndStemString(english)
 
   const compressedTokenCount = encode(compressed).length
   console.log(`... after compression: ${compressedTokenCount}`)
