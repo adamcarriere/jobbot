@@ -65,7 +65,6 @@ export const createTrelloCardForListing = async listing => {
 
   const { member } = trelloConfig
   const result = await createCardOnList({ idList: inboxList, name, desc, idLabels, idMembers: [member] })
-  store.updateListing({ ...listing, status: 'POSTED' }).then(() => {})
 
   return result
 }

@@ -38,6 +38,7 @@ export async function screenListings (results = []) {
             const entry = { ...listing, status: 'ANALYZED', openAiResponse: data }
             store.addListing(entry)
             createTrelloCardForListing(entry).then(val => {
+              store.updateListing({ ...listing, status: 'POSTED', trello: val }).then(() => {})
               resolve(entry)
             })
           }).catch(openAiError => resolve({ ...listing, status: 'OPENAI_ERROR', openAiError }))
